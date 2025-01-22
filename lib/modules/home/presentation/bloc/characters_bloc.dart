@@ -18,8 +18,10 @@ class CharactersBloc extends Bloc<CharactersEvent, CharactersState> {
             FetchAllCharactersParams()
            );
 
-            } catch (e) {
+           emit(CharactersState(stutus: StateStatus.success, characters: result));
 
+            } catch (e) {
+             emit (CharactersState(stutus: StateStatus.error));
             }
           },);
         }
