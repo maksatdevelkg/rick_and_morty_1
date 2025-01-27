@@ -7,5 +7,6 @@ abstract class AppColors {
   static const darkMainText =  Color(0xffFFFFFF);
   static const dartMainLine = Color(0xffF2F2F2);
   static const darkSecondaryText =  Color(0xff5B6975);
+  static const textInCharacters = Color(0xff6E798C);
   static const buttonColor =  Color(0xff22A2BD);
 }
