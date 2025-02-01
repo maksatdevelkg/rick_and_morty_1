@@ -1,4 +1,4 @@
-import 'package:dio/dio.dart';
+
 import 'package:get_it/get_it.dart';
 import 'package:rick_and_morty_1/core/service/dio_settings.dart';
 import 'package:rick_and_morty_1/modules/home/data/api/home_api.dart';

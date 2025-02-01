@@ -6,7 +6,6 @@ class CharacterEntity {
   final String type;
   final String gender;
   final String image;
-  
 
   CharacterEntity({
     required this.id,
@@ -16,18 +15,18 @@ class CharacterEntity {
     required this.type,
     required this.gender,
     required this.image,
-    
   });
-
- 
-
-  
 }
 
 class CharacterResponseEntity {
   final List<CharacterEntity> results;
-
-  CharacterResponseEntity({required this.results});
-
+  final int pages;
+  final int count;
   
+  
+
+  CharacterResponseEntity( {required this.pages, required this.count,
+    required this.results,
+
+  });
 }

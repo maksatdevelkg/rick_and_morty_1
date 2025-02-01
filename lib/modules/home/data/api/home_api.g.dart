@@ -76,14 +76,12 @@ class _HomeApi implements HomeApi {
     int? page,
     String? name,
     String? type,
-    String? dimension,
   }) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{
       r'page': page,
       r'name': name,
       r'type': type,
-      r'dimension': dimension,
     };
     queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{};

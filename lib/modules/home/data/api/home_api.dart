@@ -20,6 +20,7 @@ abstract class HomeApi {
     @Query("type") String? type,
     @Query("gender") String? gender,
     
+    
   });
 
   
@@ -28,7 +29,7 @@ abstract class HomeApi {
     @Query("page") int? page,
     @Query("name") String? name,
     @Query("type") String? type,
-    @Query("dimension") String? dimension,
+    
   });
 
   
