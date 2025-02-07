@@ -12,15 +12,10 @@ class CharactersBloc extends Bloc<CharactersEvent, CharactersState> {
   CharactersBloc({required FetchAllCharactersUsecase fetchAllCharactersUsecase})
       : _fetchAllCharactersUsecase = fetchAllCharactersUsecase,
         super(CharactersState(stutus: StateStatus.init)) {
-     on <ResetCharacters> ((event, emit) => characters.clear(),);
+     
 
     on<ResetCharacters>(
-      (event, emit) {
-        emit(CharactersState(
-          stutus: StateStatus.init,
-          characters: CharacterResponseEntity(results: [], count: 0, pages: 1),
-        ));
-      },
+      (event, emit) => characters.clear(),
     );
 
  on<FetchCharactersEvent>(
@@ -33,10 +28,17 @@ class CharactersBloc extends Bloc<CharactersEvent, CharactersState> {
 
       final result = await _fetchAllCharactersUsecase.execute(
         FetchAllCharactersParams(
-            page: event.page, name: event.name, status: event.status),
+            page: event.page, name: event.name, status: event.status, gender: event.gender),
       );
 
       characters.addAll(result.results);
+
+
+      if (event.sortOrder == 'asc') {
+        characters.sort((a, b) => a.name.compareTo(b.name));
+      } else if (event.sortOrder == 'desc') {
+        characters.sort((a, b) => b.name.compareTo(a.name));
+      }
 
       emit(CharactersState(
         stutus: StateStatus.success,

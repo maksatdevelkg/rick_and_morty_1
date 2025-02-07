@@ -36,4 +36,9 @@ class PaginationScrollController {
   }
 
   void jumpToStart() {}
+
+  void resetPage() {
+    currentPage = 1; 
+  
+  }
 }

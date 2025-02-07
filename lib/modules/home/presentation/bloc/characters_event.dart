@@ -5,8 +5,10 @@ class FetchCharactersEvent extends CharactersEvent {
   final String? name;
   final String? status;
   final String? gender;
+  final String? sortOrder;
+  
 
-  FetchCharactersEvent({this.name, this.page, this.gender, this.status});
+  FetchCharactersEvent(  {this.name, this.page, this.gender, this.status, this.sortOrder, });
 }
 
 class ResetCharacters extends CharactersEvent {}

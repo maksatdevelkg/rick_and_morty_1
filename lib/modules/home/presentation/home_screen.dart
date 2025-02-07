@@ -25,11 +25,14 @@ class _HomeBodyState extends State<HomeBody> {
   final _charactersBloc = di<CharactersBloc>();
   final _searchController = TextEditingController();
   final _status = ValueNotifier<String?>(null);
+  final _gender = ValueNotifier<String?>(null);
   final ValueNotifier<int> _maxPages = ValueNotifier<int>(1);
+  final ValueNotifier<String?> _sortOrder = ValueNotifier<String?>(null);
 
   @override
   void initState() {
     super.initState();
+
     paginationScrollController.init(
         initAction: () => _charactersBloc.add(FetchCharactersEvent(page: 0)),
         loadAction: () {
@@ -39,12 +42,22 @@ class _HomeBodyState extends State<HomeBody> {
                 page: paginationScrollController.currentPage,
                 name: _searchController.text,
                 status: _status.value,
+                gender: _gender.value,
+                sortOrder: _sortOrder.value,
               ),
             );
           }
         });
+  }
 
-    //
+  void _resetAndFetch() {
+    _charactersBloc.add(ResetCharacters());
+    paginationScrollController.resetPage();
+    _charactersBloc.add(FetchCharactersEvent(
+      page: 0,
+      name: _searchController.text,
+      status: _status.value,
+    ));
   }
 
   @override
@@ -69,10 +82,12 @@ class _HomeBodyState extends State<HomeBody> {
             siFilterView: _siFilterView,
             charactersBloc: _charactersBloc),
         FilterCharacterScreen(
-          status: _status,
-          showFilter: _siFilterView,
-          charactersBloc: _charactersBloc,
-        ),
+            gender: _gender,
+            status: _status,
+            showFilter: _siFilterView,
+            charactersBloc: _charactersBloc,
+            onFilterChanged: _resetAndFetch,
+            sortOrder: _sortOrder,),
         Expanded(
           child: ValueListenableBuilder<int>(
             valueListenable: _maxPages,
