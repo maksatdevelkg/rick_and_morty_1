@@ -12,7 +12,7 @@ class CharacterModel extends CharacterEntity {
   });
   factory CharacterModel.fromJson(Map<String, dynamic> json) {
     return CharacterModel(
-      id: json['id'],
+      id: int.parse(json['id'].toString()),
       name: json['name'],
       status: json['status'],
       species: json['species'],

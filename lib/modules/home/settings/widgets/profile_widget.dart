@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rick_and_morty_1/core/text_style/app_text_style.dart';
 import 'package:rick_and_morty_1/core/theme/app_colors.dart';
+import 'package:rick_and_morty_1/modules/main/presentation/provider/profile_provider.dart';
 import 'package:rick_and_morty_1/modules/main/presentation/provider/theme_provider.dart';
 
 class ProfileWidget extends StatelessWidget {
@@ -14,6 +15,7 @@ class ProfileWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
+    final profile = Provider.of<ProfileProvider>(context);
     return SizedBox(
       width: double.infinity,
       child: Column(
@@ -35,14 +37,14 @@ class ProfileWidget extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Aibek Kalykov',
+                    '${profile.firstName} ${profile.lastName} ${profile.middleName}',
                     style: AppTextStyle.s16w400,
                   ),
                   const SizedBox(
                     height: 10,
                   ),
                   Text(
-                    'Rick',
+                    '${profile.loginName} ',
                     style: AppTextStyle.s14w400,
                   )
                 ],

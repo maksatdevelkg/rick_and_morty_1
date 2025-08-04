@@ -1,7 +1,9 @@
 
 import 'package:get_it/get_it.dart';
 import 'package:rick_and_morty_1/core/service/dio_settings.dart';
+import 'package:rick_and_morty_1/core/service/graphql_service.dart';
 import 'package:rick_and_morty_1/modules/home/data/api/home_api.dart';
+import 'package:rick_and_morty_1/modules/home/data/repository/grahpql_repository.dart';
 import 'package:rick_and_morty_1/modules/home/data/repository/home_repository.dart';
 import 'package:rick_and_morty_1/modules/home/domain/usecases/fetch_all_characters_usecase.dart';
 import 'package:rick_and_morty_1/modules/home/presentation/bloc/characters_bloc.dart';
@@ -22,6 +24,7 @@ class CharactersDi {
         repository: HomeRepository(
           homeApi: di(),
         ),
+        graphqlRepository: GraphQLRepository(di()),
       );
     });
     di.registerFactory(
@@ -29,5 +32,10 @@ class CharactersDi {
         fetchAllCharactersUsecase: di(),
       ),
     );
+
+    di.registerSingleton<GraphQLService>(GraphQLService());
+
+di.registerFactory(() => GraphQLRepository(di()));
+
   }
 }

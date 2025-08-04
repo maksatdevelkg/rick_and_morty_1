@@ -31,105 +31,146 @@ class _CharacterHomeScreenState extends State<CharacterHomeScreen> {
   bool _isGrid = false;
 
   @override
+void initState() {
+  super.initState();
+
+  widget.charactersBloc.add(FetchCharactersEvent(
+    page: 0,
+    name: null,
+    useGraphQL: true, 
+  ));
+
+  
+}
+
+
+  @override
   Widget build(BuildContext context) {
-    return BlocBuilder<CharactersBloc, CharactersState>(
-      builder: (context, state) {
-        if (state.stutus == StateStatus.success) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            widget.updateMaxPages.value = (state.characters?.pages ?? 1);
-          });
-
-          widget.paginationScrollController.scrollController.addListener(() {
-            if (widget.paginationScrollController.scrollController.position
-                        .pixels ==
-                    widget.paginationScrollController.scrollController.position
-                        .maxScrollExtent &&
-                widget.paginationScrollController.currentPage <
-                    widget.updateMaxPages.value) {
-              widget.charactersBloc.add(FetchCharactersEvent(
-                page: widget.paginationScrollController.currentPage + 1,
-                name: null,
-              ));
+    return BlocListener<CharactersBloc, CharactersState>(
+      
+      listener: (context, state) {
+        print('🔍 BlocListener triggered: ${state.stutus}');
+          if (state.stutus == StateStatus.init) {
+            context.read<CharactersBloc>().add(FetchCharactersEvent(page: 0));
+          }
+        },
+      child: BlocBuilder<CharactersBloc, CharactersState>(
+        builder: (context, state) {
+          print('🧩 BlocBuilder triggered');
+      print('🧩 state.status: ${state.stutus}');
+      print('🧩 state.characters: ${state.characters}');
+      print('🧩 state.characters?.results: ${state.characters?.results}');
+      
+           widget.paginationScrollController.scrollController.addListener(() {
+              if (widget.paginationScrollController.scrollController.position
+                          .pixels ==
+                      widget.paginationScrollController.scrollController.position
+                          .maxScrollExtent &&
+                  widget.paginationScrollController.currentPage <
+                      widget.updateMaxPages.value) {
+                widget.charactersBloc.add(FetchCharactersEvent(
+                  page: widget.paginationScrollController.currentPage + 1,
+                  name: null,
+                  
+                ));
+              }
+            });
+      
+          if (state.stutus == StateStatus.loading || state.stutus == StateStatus.init) {
+        return const Center(child: CircularProgressIndicator());
+      }
+      
+      
+      
+          if (state.stutus == StateStatus.success) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              widget.updateMaxPages.value = (state.characters?.pages ?? 1);
             }
-          });
-
-          return Padding(
-            padding: const EdgeInsets.only(left: 16),
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Align(
-                    alignment: Alignment.centerRight,
-                    child: Row(
-                      children: [
-                        Text(
-                          'All characters: ${state.characters?.count ?? 0}',
-                          style: AppTextStyle.s14w500!
-                              .copyWith(color: AppColors.textInCharacters),
-                        ),
-                        SizedBox(
-                          width: 180,
-                        ),
-                        IconButton(
-                          icon: Icon(_isGrid ? Icons.list : Icons.grid_view),
-                          onPressed: () {
-                            setState(() {
-                              _isGrid = !_isGrid;
-                            });
-                          },
-                        ),
-                      ],
+            
+            
+            );
+      
+           
+      
+            return Padding(
+              padding: const EdgeInsets.only(left: 16),
+              child: Column(
+                children: [
+                  
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Align(
+                      alignment: Alignment.centerRight,
+                      child: Row(
+                        children: [
+                          Text(
+                            'All characters: ${state.characters?.count ?? 0}',
+                            style: AppTextStyle.s14w500!
+                                .copyWith(color: AppColors.textInCharacters),
+                          ),
+                          SizedBox(
+                            width: 180,
+                          ),
+                          IconButton(
+                            icon: Icon(_isGrid ? Icons.list : Icons.grid_view),
+                            onPressed: () {
+                              setState(() {
+                                _isGrid = !_isGrid;
+                              });
+                            },
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                Expanded(
-                  child: _isGrid
-                      ? GridView.builder(
-                          controller: widget
-                              .paginationScrollController.scrollController,
-                          gridDelegate:
-                              const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            crossAxisSpacing: 16,
-                            mainAxisSpacing: 16,
-                            childAspectRatio: 0.8,
+                  Expanded(
+                    child: _isGrid
+                        ? GridView.builder(
+                            controller: widget
+                                .paginationScrollController.scrollController,
+                            gridDelegate:
+                                const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              crossAxisSpacing: 16,
+                              mainAxisSpacing: 16,
+                              childAspectRatio: 0.8,
+                            ),
+                            itemCount: state.characters?.results.length ?? 0,
+                            itemBuilder: (context, index) {
+                              if (index >=
+                                  (state.characters?.results.length ?? 0)) {
+                                return const SizedBox.shrink();
+                              }
+                              return _buildCharacterItem(
+                                  state.characters?.results[index],
+                                  isGrid: true);
+                            },
+                          )
+                        : ListView.separated(
+                            controller: widget
+                                .paginationScrollController.scrollController,
+                            separatorBuilder: (_, __) =>
+                                const SizedBox(height: 30),
+                            itemCount: state.characters?.results.length ?? 0,
+                            itemBuilder: (context, index) {
+                              if (index >=
+                                  (state.characters?.results.length ?? 0)) {
+                                return const SizedBox.shrink();
+                              }
+                              return _buildCharacterItem(
+                                  state.characters?.results[index],
+                                  isGrid: false);
+                            },
                           ),
-                          itemCount: state.characters?.results.length ?? 0,
-                          itemBuilder: (context, index) {
-                            if (index >=
-                                (state.characters?.results.length ?? 0)) {
-                              return const SizedBox.shrink();
-                            }
-                            return _buildCharacterItem(
-                                state.characters?.results[index],
-                                isGrid: true);
-                          },
-                        )
-                      : ListView.separated(
-                          controller: widget
-                              .paginationScrollController.scrollController,
-                          separatorBuilder: (_, __) =>
-                              const SizedBox(height: 30),
-                          itemCount: state.characters?.results.length ?? 0,
-                          itemBuilder: (context, index) {
-                            if (index >=
-                                (state.characters?.results.length ?? 0)) {
-                              return const SizedBox.shrink();
-                            }
-                            return _buildCharacterItem(
-                                state.characters?.results[index],
-                                isGrid: false);
-                          },
-                        ),
-                ),
-              ],
-            ),
-          );
-        }
-
-        return const Center(child: Text('No data'));
-      },
+                  ),
+                ],
+              ),
+            );
+          }
+      
+          return const Center(child: Text('No data'));
+        },
+      ),
     );
   }
 
